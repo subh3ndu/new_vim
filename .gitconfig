@@ -1,0 +1,7 @@
+[core]
+	excludesfile = /Users/subhan/.gitignore
+[user]
+	name = subh3ndu
+	email = subhendukarmakar61@gmail.com
+[init]
+	defaultBranch = main

@@ -1,0 +1,176 @@
+set encoding=UTF-8
+set termguicolors
+set guifont=SauceCodePro\ Nerd\ Font:h18
+set guicursor=i-ci:hor20-Cursor
+set guicursor=r-cr:ver10-Cursor
+set laststatus=0 ruler
+set number
+set relativenumber
+set autoread
+set cin
+set history=1000
+set hlsearch
+set ignorecase
+set incsearch
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set smarttab
+set autoindent
+set smartindent
+set clipboard=unnamed
+set pastetoggle=
+set mouse=a
+set mousehide
+set vb t_vb=
+set noerrorbells
+set noswapfile
+set nobackup
+set nowritebackup
+" set undofile
+set nowrap
+
+" ———————————————
+" Key Mappings
+" ———————————————
+
+noremap <TAB> %
+
+"————————————–––––––  
+"  ColorScheme
+" ———————————–––––––
+
+syntax on
+set background=dark
+colorscheme molokai
+" let g:molokai_original = 1
+" let g:molokai_termcolors=256
+" let g:rehash256 = 1
+
+" —————————————————————
+" Compilation and Run
+" —————————————————————
+
+" F8 only for compilation 
+noremap  <F8> <ESC> :w <CR> :! g++-12 -std=c++17 -Wshadow -Wall -o %< % -O2 -Wno-unused-result<CR>
+inoremap <F8> <ESC> :w <CR> :! g++-12 -std=c++17 -Wshadow -Wall -o "%<" "%" -O2 -Wno-unused-result<CR>
+
+" F9 compilation with input
+" g++ -std=c++17 -Wshadow -Wall -o \"%e" \"%f" -O2 -Wno-unused-result
+noremap  <F9> <ESC> :w <CR>:! g++-12 -O2 -std=c++17 -o %< %  && ./%< < in <CR>
+inoremap <F9> <ESC> :w <CR>:! g++-12 -O2 -std=c++17  -o "%<" "%" && ./"%<" < in <CR>
+
+" F10 compilation with input and submit file in output
+" g++ -std=c++17 -Wshadow -Wall -o \"%e" \"%f" -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
+noremap  <F10> <ESC> :w <CR>:! g++-12 -O2 -std=c++17 -o %< %  && ./%< < in > out <CR>
+inoremap <F10> <ESC> :w <CR>:! g++-12 -O2 -std=c++17  -o "%<" "%" && ./"%<" < in > out <CR>
+
+
+" ———————————————
+"  Vim Plugins
+" ———————————————
+
+" --- Just Some Notes ---
+" :PlugClean :PlugInstall :UpdateRemotePlugins
+"
+" :CocInstall coc-python
+" :CocInstall coc-clangd
+" :CocInstall coc-snippets
+" :CocCommand snippets.edit... FOR EACH FILE TYPE
+
+" ~/.vim/plugged
+call plug#begin()
+    Plug 'tpope/vim-commentary' " For Commenting gcc & gc
+    Plug 'tpope/vim-surround' " Surrounding ysw)
+    Plug 'preservim/nerdtree' " NerdTree
+    Plug 'preservim/tagbar' " Tagbar for code navigation
+    Plug 'neoclide/coc.nvim', {'branch': 'release'} " Auto Completion
+    Plug 'neoclide/coc-snippets' " Code snippets
+    Plug 'neoclide/coc-git' " git extension for coc
+    Plug 'vim-airline/vim-airline' " Status bar
+    Plug 'ap/vim-css-color' " CSS Color Preview
+    " Plug 'rafi/awesome-vim-colorschemes' " Retro Scheme
+    " Plug 'ryanoasis/vim-devicons' " Developer Icons
+    " Plug 'tc50cal/vim-terminal' " Vim Terminal
+    Plug 'terryma/vim-multiple-cursors' " CTRL + N for multiple cursors
+    Plug 'preservim/tagbar' " Tagbar for code navigation
+    Plug 'jiangmiao/auto-pairs' " vim auto pairs
+call plug#end()
+
+" ———————————————
+" coc.nvim
+" ———————————————
+" use <tab> for trigger completion and navigate to the next complete item
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+
+" use <c-space>for trigger completion
+inoremap <silent><expr> <c-space> coc#refresh()
+" Use <C-@> on vim
+inoremap <silent><expr> <c-@> coc#refresh()
+
+inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
+inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+
+" ———————————————
+" Nvim Auto snippets
+" ———————————————
+
+Plug 'neoclide/coc-snippets'
+    inoremap <silent><expr> <TAB>
+          \ coc#pum#visible() ? coc#_select_confirm() :
+          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+          \ CheckBackSpace() ? "\<TAB>" :
+          \ coc#refresh()
+
+    function! CheckBackSpace() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    let g:coc_snippet_next = '<tab>'
+
+" ———————————————
+"  NerdTree
+" ———————————————
+
+Plug 'preservim/nerdtree'
+    let g:NERDTreeDirArrowExpandable="+"
+    let g:NERDTreeDirArrowCollapsible="~"
+    nnoremap <C-f> :NERDTreeFocus<CR>
+    nnoremap <C-t> :NERDTreeToggle<CR>
+    nmap <F7> :TagbarToggle <CR>
+    set completeopt-=preview " For No Previews
+
+" ———————————————
+" Vim Airline
+" ———————————————
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+
+
+
+                      " ———————————————————————————— "
+                      "            THE END           "
+                      " ———————————————————————————— "
+
